@@ -42,10 +42,10 @@ export default inject('store')(
         }
 
         function getPageConfig() {
-            console.log("go to print the cur page json");
-            var pageJson = `${store.pages[index].schema}`;
-            console.log(pageJson);
-            alert(pageJson);
+            console.log("go to print the cur page json via JSON.stringify~!");
+            var pageJson = store.pages[index].schema;
+            console.log(JSON.stringify(pageJson));
+            console.log("body part:" + JSON.stringify(pageJson['body'][1]['body']));
         }
 
         function renderHeader() {
