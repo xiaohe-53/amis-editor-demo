@@ -6,6 +6,6 @@ WORKDIR /etc/amis-editor
 
 COPY . .
 
-EXPOSE 8082
+EXPOSE 9000
 
 ENTRYPOINT [ "npm", "run", "server" ]

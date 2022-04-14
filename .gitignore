@@ -64,3 +64,5 @@ gh-pages
 /public
 
 package-lock.json
+.idea
+
