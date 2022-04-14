@@ -34,11 +34,18 @@ export default inject('store')(
 
         function save() {
             store.updatePageSchemaAt(index);
-            toast.success('保存成功', '提示');
+            toast.success('保存成功!', '提示');
         }
 
         function exit() {
             history.push(`/${store.pages[index].path}`);
+        }
+
+        function getPageConfig() {
+            console.log("go to print the cur page json");
+            var pageJson = `${store.pages[index].schema}`;
+            console.log(pageJson);
+            alert(pageJson);
         }
 
         function renderHeader() {
@@ -71,6 +78,10 @@ export default inject('store')(
 
                         <div className="btn-item" onClick={exit}>
                             退出
+                        </div>
+
+                        <div className="btn-item" onClick={getPageConfig}>
+                            显示代码
                         </div>
                     </div>
                 </div>

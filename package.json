@@ -1,6 +1,6 @@
 {
     "name": "amis-editor-demo",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "amis 可视化编辑器",
     "main": "index.js",
     "scripts": {
@@ -25,9 +25,9 @@
     },
     "homepage": "https://github.com/fex-team/amis-editor-demo#readme",
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.3",
         "amis": "1.8.0",
         "amis-editor": "4.1.0-beta.4",
-        "@fortawesome/fontawesome-free": "^5.15.3",
         "axios": "0.21.1",
         "bootstrap": "3.4.1",
         "copy-to-clipboard": "^3.2.0",
@@ -38,7 +38,8 @@
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
         "react-router": "5.0.1",
-        "react-router-dom": "5.0.1"
+        "react-router-dom": "5.0.1",
+        "vertx": "^0.0.1-security"
     },
     "devDependencies": {
         "@types/lodash": "^4.14.123",

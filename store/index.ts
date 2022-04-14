@@ -8,12 +8,12 @@ export const MainStore = types
             {
                 id: `${pagIndex}`,
                 path: 'hello-world',
-                label: 'Hello world',
+                label: 'Hello 53jy',
                 icon: 'fa fa-file',
                 schema: {
                     type: 'page',
-                    title: 'Hello world',
-                    body: '初始页面'
+                    title: 'Hello naimiao',
+                    body: '初始页面of 53jy.net'
                 }
             }
         ]),
@@ -86,6 +86,10 @@ export const MainStore = types
             self.isMobile = value;
         }
 
+        function getPageConfig(index: number) {
+            return self.pages[index].schema;
+        }
+
         return {
             toggleAsideFolded,
             toggleAsideFixed,
@@ -97,6 +101,7 @@ export const MainStore = types
             updateSchema,
             setPreview,
             setIsMobile,
+            getPageConfig,
             afterCreate() {
                 // persist store
                 if (typeof window !== 'undefined' && window.localStorage) {
