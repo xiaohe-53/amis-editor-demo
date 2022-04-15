@@ -44,19 +44,18 @@ export default inject('store')(
 
         //my sync function for page config json
         function getPageConfig() {
-            console.log('go to print the cur page json via JSON.stringify~!');
+            console.log(
+                'go to print the cur page json via JSON.stringify~ and then save to cloud func');
             var pageJson = store.pages[index].schema;
             const pageJsonStr = JSON.stringify(pageJson);
             console.log('body part:' + JSON.stringify(pageJson['body'][1]['body']));
-            axios.get('https://service-3b93s0ed-1252510749.sh.apigw.tencentcs.com/release/creatorWechat',
-                {
-                    params: {
-                        func: 'savePageJsonConfig',
-                        appid: 'demo',
-                        pageid: index,
-                        pageConfig: pageJsonStr
-                    }
-                }).then(function(value) {
+            var params = new URLSearchParams();
+            params.append('appid', 'demo');
+            params.append('pageid', index.toString());
+            params.append('pageConfig', pageJsonStr);
+            axios.post('https://service-3b93s0ed-1252510749.sh.apigw.tencentcs.com/release/creatorWechat?func=savePageJsonConfig',
+                params).then(function(value) {
+                console.log('save ok');
                 console.log(value);
             }).catch(function(reason) {
                 console.log(reason);
@@ -97,7 +96,7 @@ export default inject('store')(
                         </div>
 
                         <div className="btn-item" onClick={getPageConfig}>
-                            显示代码
+                            同步页面代码
                         </div>
                     </div>
                 </div>
