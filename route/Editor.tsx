@@ -6,6 +6,7 @@ import {RouteComponentProps} from 'react-router-dom';
 import {Layout, Switch, classnames as cx, toast} from 'amis';
 import '../renderer/MyRenderer';
 import '../editor/MyRenderer';
+import axios from 'axios';
 
 let currentIndex = -1;
 
@@ -24,7 +25,7 @@ const schemaUrl = `${host}/schema.json`;
 __uri('amis/schema.json');
 
 export default inject('store')(
-    observer(function ({store, location, history, match}: {store: IMainStore} & RouteComponentProps<{id: string}>) {
+    observer(function({store, location, history, match}: {store: IMainStore} & RouteComponentProps<{id: string}>) {
         const index: number = parseInt(match.params.id, 10);
 
         if (index !== currentIndex) {
@@ -41,11 +42,26 @@ export default inject('store')(
             history.push(`/${store.pages[index].path}`);
         }
 
+        //my sync function for page config json
         function getPageConfig() {
-            console.log("go to print the cur page json via JSON.stringify~!");
+            console.log('go to print the cur page json via JSON.stringify~!');
             var pageJson = store.pages[index].schema;
-            console.log(JSON.stringify(pageJson));
-            console.log("body part:" + JSON.stringify(pageJson['body'][1]['body']));
+            const pageJsonStr = JSON.stringify(pageJson);
+            console.log('body part:' + JSON.stringify(pageJson['body'][1]['body']));
+            axios.get('https://service-3b93s0ed-1252510749.sh.apigw.tencentcs.com/release/creatorWechat',
+                {
+                    params: {
+                        func: 'savePageJsonConfig',
+                        appid: 'demo',
+                        pageid: index,
+                        pageConfig: pageJsonStr
+                    }
+                }).then(function(value) {
+                console.log(value);
+            }).catch(function(reason) {
+                console.log(reason);
+            });
+
         }
 
         function renderHeader() {
