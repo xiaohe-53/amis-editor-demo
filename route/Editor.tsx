@@ -39,10 +39,15 @@ export default inject('store')(
             store.updatePageSchemaAt(index);
             //test only
             let templateName = store.pages[index].label;
-
+            var pageJson = store.pages[index].schema;
+            const pageJsonStr = JSON.stringify(pageJson);
             console.log(`go TO save template json for app ${appId} & page ${templateName}`);
-            let reqUrl = `https://service-ij2o03lz-1252510749.sh.apigw.tencentcs.com/form/addTemplate?appId=${appId}&templateName=${templateName}&templateConfigJson=${JSON.stringify(store.pages[index].schema)}`;
-            axios.get(reqUrl).then(response => console.log(
+            let reqUrl = 'https://service-ij2o03lz-1252510749.sh.apigw.tencentcs.com/form/addTemplate';
+            var params = new URLSearchParams();
+            params.append('appId', appId);
+            params.append('templateName', templateName);
+            params.append('templateConfigJson', pageJsonStr);
+            axios.post(reqUrl, params).then(response => console.log(
                 reqUrl + ' returned ' + response.status
             ));
             toast.success('!~保存--成功~!', '提示');
@@ -52,11 +57,25 @@ export default inject('store')(
             history.push(`/${store.pages[index].path}`);
         }
 
+        //my sync function for page config json
         function getPageConfig() {
-            console.log('go to print the cur page json via JSON.stringify~!');
+            console.log(
+                'go to print the cur page json via JSON.stringify~ and then save to cloud func');
             var pageJson = store.pages[index].schema;
-            console.log(JSON.stringify(pageJson));
+            const pageJsonStr = JSON.stringify(pageJson);
             console.log('body part:' + JSON.stringify(pageJson['body'][1]['body']));
+            var params = new URLSearchParams();
+            params.append('appid', 'demo');
+            params.append('pageid', index.toString());
+            params.append('pageConfig', pageJsonStr);
+            axios.post('https://service-3b93s0ed-1252510749.sh.apigw.tencentcs.com/release/creatorWechat?func=savePageJsonConfig',
+                params).then(function(value) {
+                console.log('save ok');
+                console.log(value);
+            }).catch(function(reason) {
+                console.log(reason);
+            });
+
         }
 
         function renderHeader() {
@@ -91,8 +110,8 @@ export default inject('store')(
                             退出
                         </div>
 
-                        <div className='btn-item' onClick={getPageConfig}>
-                            显示代码
+                        <div className="btn-item" onClick={getPageConfig}>
+                            同步页面代码
                         </div>
                     </div>
                 </div>
