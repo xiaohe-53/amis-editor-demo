@@ -110,9 +110,6 @@ export default inject('store')(
                             退出
                         </div>
 
-                        <div className="btn-item" onClick={getPageConfig}>
-                            同步页面代码
-                        </div>
                     </div>
                 </div>
             );
