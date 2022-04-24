@@ -6,6 +6,7 @@ import {RouteComponentProps} from 'react-router-dom';
 import {Layout, Switch, classnames as cx, toast} from 'amis';
 import '../renderer/MyRenderer';
 import '../editor/MyRenderer';
+import axios from 'axios';
 
 let currentIndex = -1;
 
@@ -20,11 +21,13 @@ if (/^\/amis-editor-demo/.test(window.location.pathname)) {
 
 const schemaUrl = `${host}/schema.json`;
 
+let appId = 'demo';
+
 // @ts-ignore
 __uri('amis/schema.json');
 
 export default inject('store')(
-    observer(function ({store, location, history, match}: {store: IMainStore} & RouteComponentProps<{id: string}>) {
+    observer(function({store, location, history, match}: {store: IMainStore} & RouteComponentProps<{id: string}>) {
         const index: number = parseInt(match.params.id, 10);
 
         if (index !== currentIndex) {
@@ -34,7 +37,15 @@ export default inject('store')(
 
         function save() {
             store.updatePageSchemaAt(index);
-            toast.success('保存成功!', '提示');
+            //test only
+            let templateName = store.pages[index].label;
+
+            console.log(`go TO save template json for app ${appId} & page ${templateName}`);
+            let reqUrl = `https://service-ij2o03lz-1252510749.sh.apigw.tencentcs.com/form/addTemplate?appId=${appId}&templateName=${templateName}&templateConfigJson=${JSON.stringify(store.pages[index].schema)}`;
+            axios.get(reqUrl).then(response => console.log(
+                reqUrl + ' returned ' + response.status
+            ));
+            toast.success('!~保存--成功~!', '提示');
         }
 
         function exit() {
@@ -42,45 +53,45 @@ export default inject('store')(
         }
 
         function getPageConfig() {
-            console.log("go to print the cur page json via JSON.stringify~!");
+            console.log('go to print the cur page json via JSON.stringify~!');
             var pageJson = store.pages[index].schema;
             console.log(JSON.stringify(pageJson));
-            console.log("body part:" + JSON.stringify(pageJson['body'][1]['body']));
+            console.log('body part:' + JSON.stringify(pageJson['body'][1]['body']));
         }
 
         function renderHeader() {
             return (
-                <div className="editor-header clearfix box-shadow bg-dark">
-                    <div className="editor-preview">
+                <div className='editor-header clearfix box-shadow bg-dark'>
+                    <div className='editor-preview'>
                         预览{' '}
                         <Switch
                             value={store.preview}
                             onChange={(value: boolean) => store.setPreview(value)}
-                            className="m-l-xs"
+                            className='m-l-xs'
                             inline
                         />
                     </div>
 
-                    <div className="editor-preview">
+                    <div className='editor-preview'>
                         移动端{' '}
                         <Switch
                             value={store.isMobile}
                             onChange={(value: boolean) => store.setIsMobile(value)}
-                            className="m-l-xs"
+                            className='m-l-xs'
                             inline
                         />
                     </div>
 
-                    <div className="editor-header-btns">
+                    <div className='editor-header-btns'>
                         <div className={cx('btn-item')} onClick={save}>
                             保存
                         </div>
 
-                        <div className="btn-item" onClick={exit}>
+                        <div className='btn-item' onClick={exit}>
                             退出
                         </div>
 
-                        <div className="btn-item" onClick={getPageConfig}>
+                        <div className='btn-item' onClick={getPageConfig}>
                             显示代码
                         </div>
                     </div>
@@ -95,7 +106,7 @@ export default inject('store')(
                     preview={store.preview}
                     value={store.schema}
                     onChange={(value: any) => store.updateSchema(value)}
-                    className="is-fixed"
+                    className='is-fixed'
                     $schemaUrl={schemaUrl}
                     iframeUrl={iframeUrl}
                     isMobile={store.isMobile}
