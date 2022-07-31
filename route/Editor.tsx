@@ -8,6 +8,8 @@ import {IMainStore} from '../store';
 import '../editor/DisabledEditorPlugin'; // 用于隐藏一些不需要的Editor预置组件
 import '../renderer/MyRenderer';
 import '../editor/MyRenderer';
+import axios from 'axios';
+
 
 let currentIndex = -1;
 
@@ -21,6 +23,8 @@ if (/^\/amis-editor-demo/.test(window.location.pathname)) {
 }
 
 const schemaUrl = `${host}/schema.json`;
+
+let appId = 'demo';
 
 // @ts-ignore
 __uri('amis/schema.json');
@@ -41,11 +45,48 @@ export default inject('store')(
 
     function save() {
       store.updatePageSchemaAt(index);
-      toast.success('保存成功', '提示');
+      //test only
+      let templateName = store.pages[index].label;
+      var pageJson = store.pages[index].schema;
+      const pageJsonStr = JSON.stringify(pageJson);
+
+      console.log(`go TO save template json for app ${appId} & page ${templateName}`);
+      let reqUrl = 'https://service-ij2o03lz-1252510749.sh.apigw.tencentcs.com/form/addTemplate';
+      var params = new URLSearchParams();
+      params.append('appId', appId);
+      params.append('templateName', templateName);
+      params.append('templateConfigJson', pageJsonStr);
+      axios.post(reqUrl, params).then(response => console.log(
+        reqUrl + ' returned ' + response.status
+      ));
+      toast.success('!~保存--成功~!', '提示');
+
     }
 
     function exit() {
       history.push(`/${store.pages[index].path}`);
+    }
+
+    function getPageConfig() {
+      console.log("go to print the cur page json via JSON.stringify~!");
+      var pageJson = store.pages[index].schema;
+      console.log(JSON.stringify(pageJson));
+      console.log("body part:" + JSON.stringify(pageJson['body'][1]['body']));
+
+      const pageJsonStr = JSON.stringify(pageJson);
+      console.log('body part:' + JSON.stringify(pageJson['body'][1]['body']));
+      var params = new URLSearchParams();
+      params.append('appid', 'demo');
+      params.append('pageid', index.toString());
+      params.append('pageConfig', pageJsonStr);
+      axios.post('https://service-3b93s0ed-1252510749.sh.apigw.tencentcs.com/release/creatorWechat?func=savePageJsonConfig',
+        params).then(function(value) {
+        console.log('save ok');
+        console.log(value);
+      }).catch(function(reason) {
+        console.log(reason);
+      });
+
     }
 
     return (
